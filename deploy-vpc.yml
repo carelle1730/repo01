@@ -33,7 +33,6 @@
         internet_gateway: True
         route_tables:
           - subnets:
-              - 172.22.0.0/24
               - 172.22.1.0/24
               - 172.22.2.0/24
             routes:
