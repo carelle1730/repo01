@@ -1,0 +1,36 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    region: us-east-1
+
+  tasks:
+    - name: create launch config
+      ec2_lc:
+        name: Anisble_Launch_Config
+        image_id: ami-591dda23
+        key_name: POC-TEST-KEY
+        region: us-east-1
+        security_groups: sg-fe64b88c
+        instance_type: t2.micro
+        assign_public_ip: yes
+ 
+    - name: create autoscaling group
+      ec2_asg:
+        name: Ansible_Auto_Group
+        load_balancers: [ 'Ansible-ELB' ]
+        availability_zones: [ 'us-east-1a', 'us-east-1b' ]
+        vpc_zone_identifier: [ 'subnet-ecf80ca4', 'subnet-c6b5859d' ]
+        launch_config_name: Anisble_Launch_Config
+        health_check_period: 60
+        health_check_type: ELB
+        replace_all_instances: yes
+        min_size: 1
+        max_size: 3
+        desired_capacity: 2
+        region: us-east-1
+        tags:
+          - environment: production
+            propagate_at_launch: no
