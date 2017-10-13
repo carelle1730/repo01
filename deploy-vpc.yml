@@ -1,0 +1,52 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    region: us-east-1
+
+  tasks:
+    - ec2_vpc:
+        state: present
+        cidr_block: 172.22.0.0/16
+        resource_tags: { "Environment":"Development" }
+        subnets:
+          - cidr: 172.22.0.0/24
+            az: us-east-1f
+            resource_tags: { "Environment":"Dev", "Tier" : "Emanu-Priv" }
+          - cidr: 172.22.1.0/24
+            az: us-east-1e
+            resource_tags: { "Environment":"Dev", "Tier" : "Web" }
+          - cidr: 172.22.2.0/24
+            az: us-east-1d
+            resource_tags: { "Environment":"Dev", "Tier" : "App" }
+          - cidr: 172.22.3.0/24
+            az: us-east-1c
+            resource_tags: { "Environment":"Dev", "Tier" : "DB" }
+          - cidr: 172.22.4.0/24
+            az: us-east-1b
+            resource_tags: { "Environment":"Dev", "Tier" : "Emanue-Priv-03" }
+          - cidr: 172.22.5.0/24
+            az: us-east-1a
+            resource_tags: { "Environment":"Dev", "Tier" : "Emanue-Priv-02" }
+        internet_gateway: True
+        route_tables:
+          - subnets:
+              - 172.22.0.0/24
+              - 172.22.1.0/24
+              - 172.22.2.0/24
+            routes:
+              - dest: 0.0.0.0/0
+                gw: igw
+
+          - subnets:
+              - 172.22.3.0/24
+              - 172.22.4.0/24
+              - 172.22.5.0/24
+            routes:
+              - dest: 0.0.0.0/0
+                gw: igw
+
+        region: us-east-1
+      register: vpc
