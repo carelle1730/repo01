@@ -1,0 +1,41 @@
+---
+ - hosts: localhost
+   connection: local
+   gather_facts: no
+
+   var:
+     asg_name: autoscale-group-prod
+     region: us-east-1
+
+   task:
+
+   scaling_policies:
+      - scaling_adjustment: 1
+        name: policy-high-cpu
+        cooldown: 300
+
+      - scaling_adjustment: -1
+        name: policy-low-cpu
+        cooldown: 300
+
+   alarm_metrics:
+      - name: group-high-cpu-alarm
+        metric: "CPUUtilization"
+        statistics: Average
+        comparison: ">="
+        threshold: "85"
+        period: 300
+        evaluation_periods: 2
+        unit: "Percent"
+        description: "alerm when CPU utilization is >= 85% for 10 minutes."
+        dimensions: {"AutoScalingGroupName": 'autoscale-chameleon-prod'}
+        scaling_policy_name: policy-high-cpu
+
+      - name: group-healthy-host-alarm
+        metric: "HealthyHostCount"
+        statistics: Average
+        comparison: "<"
+        threshold: "1"
+        period: 300
+                                                                                          98,3          78%
+

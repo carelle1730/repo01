@@ -1,0 +1,79 @@
+--- # Installed IPA-Client,Join And Installed All Basic Commands Required By Server.
+- name: Join IPA Client To Domain
+  hosts: aws-tests
+  user: jenkins
+  become: yes
+# connection: local
+  gather_facts: False
+
+  vars:
+    ipa_password: TAKOB1rose@
+    user_password: emslf/hGaSSIw
+    user_name: emanu7
+
+  tasks:
+    - name: Install All Updates
+      yum: name=* state=latest
+
+    - name: Add Back Door User
+      action: user name={{ user_name}} password={{ user_password }}
+            createhome=yes 
+            state=present 
+      register: newuser
+
+    - name: Make Sure 'wheel' Group Exist
+      group:
+        name: wheel
+        state: present
+
+    - name: Allow 'wheel' Group To have Passwordless Sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+
+    - name: Add sudoers users to wheel group
+      user: name={{ user_name }} groups=wheel append=yes state=present createhome=yes
+
+    - name: Expire Password Days For User
+      shell: chage -d 365 {{ user_name }}
+      notify:
+        - restart sssd
+
+    - name: Install common software requirements
+      yum: pkg={{ item }} state=present
+      notify:
+        - restart sssd
+      with_items:
+         - git
+         - vim
+         - sysstat
+         - bind-utils
+         - telnet
+         - dstat
+         - nmap
+         - lsof
+         - mlocate
+         - pcp-import-sar2pcp
+         - tcpdump
+         - traceroute
+         - ipa-client
+
+#    - name: Join IPA domain
+#      command: ipa-client-install --server=ipa.realworldtek.com --domain=private.domain --principal=admin --password="{{ipa_password}}" --force-join --mkhomedir --force-ntpd -U
+     
+    - name: Check IPA For User Love
+      shell: getent passwd love@realworldtek.com  
+
+    - name: Check IPA For Logins Failures with Love
+      shell: pam_tally2 -u love@realworldtek.com  
+
+  handlers:
+   - name: restart sssd
+     service: 
+       name=sssd
+       state=restarted
+      
+
+
