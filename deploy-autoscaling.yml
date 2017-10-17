@@ -7,12 +7,38 @@
     region: us-east-1
 
   tasks:
+    - local_action:
+        module: ec2_elb_lb
+        region: "{{ region }}"
+        name: Auto-ELB
+        state: present
+        zones:
+          - us-east-1a
+          - us-east-1b
+          - us-east-1c
+          - us-east-1d
+          - us-east-1e
+          - us-east-1f
+        listeners:
+          - protocol: http # options are http, https, ssl, tcp
+            load_balancer_port: 80
+            instance_port: 80
+            proxy_protocol: True
+          - protocol: https
+            load_balancer_port: 443
+            instance_protocol: http # optional, defaults to value of protocol setting
+            instance_port: 80
+            # ssl certificate required for https or ssl
+            ssl_certificate_id: arn:aws:acm:us-east-1:380486833044:certificate/bc2b55ba-a392-4208-883f-64fe24a37306
+        #         ssl_certificate_id: "arn:aws:iam::123456789012:server-certificate/company/servercerts/ProdServerCert"
+        #
+
     - name: create launch config
       ec2_lc:
         name: Anisble_Launch_Config
-        image_id: ami-591dda23
+        image_id: ami-11dc0a6b
         key_name: POC-TEST-KEY
-        region: us-east-1
+        region: "{{ region }}"
         security_groups: sg-fe64b88c
         instance_type: t2.micro
         assign_public_ip: yes
@@ -20,7 +46,7 @@
     - name: create autoscaling group
       ec2_asg:
         name: Ansible_Auto_Group
-        load_balancers: [ 'Ansible-ELB' ]
+        load_balancers: [ 'Auto-ELB' ]
         availability_zones: [ 'us-east-1a', 'us-east-1b' ]
         vpc_zone_identifier: [ 'subnet-ecf80ca4', 'subnet-c6b5859d' ]
         launch_config_name: Anisble_Launch_Config
@@ -30,7 +56,9 @@
         min_size: 1
         max_size: 3
         desired_capacity: 2
-        region: us-east-1
+        region: "{{ region }}"
         tags:
           - environment: production
             propagate_at_launch: no
+
+
