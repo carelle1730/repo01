@@ -1,6 +1,6 @@
---- # Installed IPA-Client,Join And Installed All Basic Commands Required By Server.
+--- # Installed IPA-Client,Join And Installed All Basic Commands.
 - name: Join IPA Client To Domain
-  hosts: aws-tests
+  hosts: 10.0.0.108
   user: jenkins
   become: yes
 # connection: local
