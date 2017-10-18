@@ -1,6 +1,6 @@
 --- # Installed IPA-Client,Join And Installed All Basic Commands Required By Server.
 - name: Remove IPA Client From Domain
-  hosts: 10.0.0.108
+  hosts: aws-tests
   user: jenkins
   become: yes
 # connection: local
