@@ -21,6 +21,10 @@
             state=absent 
       register: newuser
 
+    - name: Remove IPA domain
+      command: ipa-client-install --uninstall --server=ipa.realworldtek.com --domain=private.domain --principal=admin --password="{{ipa_password}}" -U
+
+
     - name: Remove common software requirements
       yum: pkg={{ item }} state=absent
       with_items:
@@ -37,15 +41,4 @@
          - tcpdump
          - traceroute
          - ipa-client
-
-    - name: Remove IPA domain
-      command: ipa-client-install --uninstall --server=ipa.realworldtek.com --domain=private.domain --principal=admin --password="{{ipa_password}}" -U
      
-    - name: Check IPA For User Love
-      shell: getent passwd love@realworldtek.com  
-
-    - name: Check IPA For Logins Failures with Love
-      shell: pam_tally2 -u love@realworldtek.com  
-      
-
-
