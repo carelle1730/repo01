@@ -1,0 +1,51 @@
+--- # Installed IPA-Client,Join And Installed All Basic Commands Required By Server.
+- name: Remove IPA Client From Domain
+  hosts: aws-tests
+  user: jenkins
+  become: yes
+# connection: local
+  gather_facts: False
+
+  vars:
+    ipa_password: TAKOB1rose@
+    user_password: emslf/hGaSSIw
+    user_name: emanu7
+
+  tasks:
+    - name: Remove All Updates
+      yum: name=* state=present
+
+    - name: Delete Back Door User
+      action: user name={{ user_name}} password={{ user_password }}
+            createhome=no 
+            state=absent 
+      register: newuser
+
+    - name: Remove common software requirements
+      yum: pkg={{ item }} state=absent
+      with_items:
+         - git
+         - vim
+         - sysstat
+         - bind-utils
+         - telnet
+         - dstat
+         - nmap
+         - lsof
+         - mlocate
+         - pcp-import-sar2pcp
+         - tcpdump
+         - traceroute
+         - ipa-client
+
+    - name: Remove IPA domain
+      command: ipa-client-install --uninstall --server=ipa.realworldtek.com --domain=private.domain --principal=admin --password="{{ipa_password}}" -U
+     
+    - name: Check IPA For User Love
+      shell: getent passwd love@realworldtek.com  
+
+    - name: Check IPA For Logins Failures with Love
+      shell: pam_tally2 -u love@realworldtek.com  
+      
+
+
