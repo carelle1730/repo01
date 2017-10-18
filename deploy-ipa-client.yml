@@ -60,8 +60,8 @@
          - traceroute
          - ipa-client
 
-#    - name: Join IPA domain
-#      command: ipa-client-install --server=ipa.realworldtek.com --domain=private.domain --principal=admin --password="{{ipa_password}}" --force-join --mkhomedir --force-ntpd -U
+    - name: Join IPA domain
+      command: ipa-client-install --server=ipa.realworldtek.com --domain=private.domain --principal=admin --password="{{ipa_password}}" --force-join --mkhomedir --force-ntpd -U
      
     - name: Check IPA For User Love
       shell: getent passwd love@realworldtek.com  

@@ -1,0 +1,10 @@
+- name: delete anonymous instances
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - when:  "'True'  length(tags) = 0 AND
+                     age > 30 minutes"
+      local_action: ec2 state=absent
+                        instance_ids={{ ec2_id }}
+
