@@ -48,6 +48,7 @@
       with_items:
          - git
          - vim
+         - wget
          - sysstat
          - bind-utils
          - telnet
@@ -59,6 +60,7 @@
          - tcpdump
          - traceroute
          - ipa-client
+         - epel-release
 
     - name: Join IPA domain
       command: ipa-client-install --server=ipa.realworldtek.com --domain=private.domain --principal=admin --password="{{ipa_password}}" --force-join --mkhomedir --force-ntpd -U

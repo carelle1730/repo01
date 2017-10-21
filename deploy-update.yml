@@ -38,12 +38,12 @@
     - name: Expire Password Days For User
       shell: chage -d 365 {{ user_name }}
       notify:
-        - restart sssd
+        - restart sshd
 
     - name: Install common software requirements
       yum: pkg={{ item }} state=present
       notify:
-        - restart sssd
+        - restart sshd
       with_items:
          - git
          - vim
@@ -61,7 +61,7 @@
          - epel-release
 
   handlers:
-   - name: restart sssd
+   - name: restart sshd
      service: 
-       name=sssd
+       name=sshd
        state=restarted
