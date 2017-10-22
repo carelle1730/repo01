@@ -1,5 +1,5 @@
---- # Installed Updates And All Basic Commands.
-- name: Join IPA Client To Domain
+--- 
+- name: Installed Updates And All Basic Commands 
   hosts: all-servers
   user: jenkins
   become: yes
