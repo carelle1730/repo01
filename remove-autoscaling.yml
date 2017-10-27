@@ -33,7 +33,7 @@
         #         ssl_certificate_id: "arn:aws:iam::123456789012:server-certificate/company/servercerts/ProdServerCert"
         #
 
-    - name: create autoscaling group
+    - name: remove autoscaling group
       ec2_asg:
         name: Ansible_Auto_Group
         state: absent
@@ -53,7 +53,7 @@
             propagate_at_launch: no
 
 
-    - name: create launch config
+    - name: remove launch config
       ec2_lc:
         name: Anisble_Launch_Config
         state: absent
