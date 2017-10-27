@@ -59,6 +59,7 @@
          - tcpdump
          - traceroute
          - epel-release
+         - python-boto3
 
   handlers:
    - name: restart sshd
