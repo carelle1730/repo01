@@ -5,12 +5,13 @@
 
   vars:
     region: us-east-1
+    elb_name: Auto-ELB
 
   tasks:
     - local_action:
         module: ec2_elb_lb
         region: "{{ region }}"
-        name: Auto-ELB
+        name: "{{ elb_name }}"
         state: present
         zones:
           - us-east-1a
