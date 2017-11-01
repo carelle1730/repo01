@@ -25,7 +25,6 @@
     - name: Remove common software requirements
       yum: pkg={{ item }} state=absent
       with_items:
-         - git
          - vim
          - sysstat
          - bind-utils
