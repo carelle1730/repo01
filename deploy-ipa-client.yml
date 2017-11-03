@@ -49,6 +49,7 @@
          - git
          - vim
          - wget
+         - curl
          - sysstat
          - bind-utils
          - telnet
