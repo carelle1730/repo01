@@ -6,6 +6,7 @@
   vars:
     region: us-east-1
     elb_name: Auto-ELB
+    ami_id: ami-78d16402
 
   tasks:
     - local_action:
@@ -37,7 +38,7 @@
     - name: create launch config
       ec2_lc:
         name: Anisble_Launch_Config
-        image_id: ami-11dc0a6b
+        image_id: "{{ ami_id }}"
         key_name: POC-TEST-KEY
         region: "{{ region }}"
         security_groups: sg-fe64b88c
