@@ -6,7 +6,7 @@
   vars:
     region: us-east-1
     elb_name: Auto-ELB
-    ami_id: ami-78d16402
+    ami_id: ami-1c239266
 
   tasks:
     - local_action:
