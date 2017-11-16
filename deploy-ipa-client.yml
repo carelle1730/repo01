@@ -1,4 +1,4 @@
---- # Install IPA Client And All Basic Packages.
+--- # Install IPA Client Plus Basic Packages.
 - name: Join IPA Client To Domain
   hosts: aws-tests
   user: jenkins
