@@ -62,6 +62,7 @@
          - traceroute
          - ipa-client
          - epel-release
+         - open-vm-tools
 
     - name: Join IPA domain
       command: ipa-client-install --server=ipa.realworldtek.com --domain=private.domain --principal=admin --password="{{ipa_password}}" --force-join --mkhomedir --force-ntpd -U
@@ -77,6 +78,13 @@
      service: 
        name=sssd
        state=restarted
+   
+   - name: restart server
+     shell: reboot -f
+
+
+
+
       
 
 
