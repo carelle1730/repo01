@@ -7,7 +7,7 @@
   gather_facts: False
 
   vars:
-    ipa_password: TAKOB1rose@
+    ipa_password: passw0rd123!
     user_password: emslf/hGaSSIw
     user_name: emanu7
 
@@ -68,7 +68,7 @@
       command: ipa-client-install --server=ipa.realworldtek.com --domain=private.domain --principal=admin --password="{{ipa_password}}" --force-join --mkhomedir --force-ntpd -U
      
     - name: Check IPA For User Love
-      shell: getent passwd love@realworldtek.com  
+      shell: getent passwd love@realworldtek.com
 
     - name: Check IPA For Logins Failures with Love
       shell: pam_tally2 -u love@realworldtek.com  

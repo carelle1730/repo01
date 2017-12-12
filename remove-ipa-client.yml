@@ -7,7 +7,7 @@
   gather_facts: False
 
   vars:
-    ipa_password: TAKOB1rose@
+    ipa_password: passw0rd123!
     user_password: emslf/hGaSSIw
     user_name: emanu7
 

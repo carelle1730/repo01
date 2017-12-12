@@ -60,9 +60,13 @@
          - traceroute
          - epel-release
          - python-boto3
+         - open-vm-tools
 
   handlers:
    - name: restart sshd
      service: 
        name=sshd
-       state=restarted
+       state=restarted 
+
+
+

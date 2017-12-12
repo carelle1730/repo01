@@ -1,0 +1,22 @@
+---
+- name: Restart Servers
+  hosts: 10.0.0.106
+  user: jenkins
+  become: yes
+# connection: local
+  gather_facts: False
+
+  vars:
+    ansible_ip: 10.0.0.106
+
+  tasks:
+    - name: reboot the system when package is upgraded
+      command: sleep 5 && reboot -r ###"Ansible system package upgraded"
+#     when: latest_state.changed
+#     tags: upgrade_packages_all
+
+    - name: waiting for server to come back
+      local_action: wait_for host={{ ansible_ip }} port=22 state=started delay=30 timeout=60
+      sudo: true
+#     tags: upgrade_packages_all
+
