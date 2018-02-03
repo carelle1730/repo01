@@ -1,6 +1,6 @@
 --- # Install IPA Client Plus Basic Packages-*.
 - name: Join IPA Client To Domain
-  hosts: aws-tests
+  hosts: ipa-clients
   user: jenkins
   become: yes
 # connection: local
@@ -65,13 +65,13 @@
          - open-vm-tools
 
     - name: Join IPA domain
-      command: ipa-client-install --server=ipa.realworldtek.com --domain=private.domain --principal=admin --password="{{ipa_password}}" --force-join --mkhomedir --force-ntpd -U
+      command: ipa-client-install --server=ipa.realworld.gov --domain=private.domain --principal=admin --password="{{ipa_password}}" --force-join --mkhomedir --force-ntpd -U
      
     - name: Check IPA For User Love
-      shell: getent passwd love@realworldtek.com
+      shell: getent passwd admin@realworld.gov
 
     - name: Check IPA For Logins Failures with Love
-      shell: pam_tally2 -u love@realworldtek.com  
+      shell: pam_tally2 -u admin@realworld.gov
 
   handlers:
    - name: restart sssd

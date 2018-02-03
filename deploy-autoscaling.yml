@@ -6,21 +6,19 @@
   vars:
     region: us-east-1
     elb_name: Auto-ELB
-    ami_id: ami-cd4df3b7
+    ami_id: ami-6beebe11
+    security_id: sg-1edaee6b
+    key_name: Emanue-GoldKey
+    subnets_list: subnet-8967fed3,subnet-ca7098ae,subnet-eb6932a3
 
   tasks:
     - local_action:
-        module: ec2_elb_lb
+#        module: ec2_elb_lb
+        module: elb_classic_lb
         region: "{{ region }}"
         name: "{{ elb_name }}"
         state: present
-        zones:
-          - us-east-1a
-          - us-east-1b
-          - us-east-1c
-          - us-east-1d
-          - us-east-1e
-          - us-east-1f
+        subnets: "{{ subnets_list }}"
         listeners:
           - protocol: http # options are http, https, ssl
             load_balancer_port: 80
@@ -32,6 +30,20 @@
             instance_port: 80
             # ssl certificate required for https or ssl
             ssl_certificate_id: arn:aws:acm:us-east-1:380486833044:certificate/bc2b55ba-a392-4208-883f-64fe24a37306
+        health_check:
+            ping_protocol: http # options are http, https, ssl, tcp
+            ping_port: 80
+            ping_path: "/index.html" # not required for tcp or ssl
+            response_timeout: 5 # seconds
+            interval: 15 # seconds
+            unhealthy_threshold: 2
+            healthy_threshold: 3
+        access_logs:
+            interval: 5 # minutes (defaults to 60)
+            s3_location: "falice-migration" # This value is required if access_logs is set
+            s3_prefix: "Logs"
+#        delegate_to: localhost
+
         #         ssl_certificate_id: "arn:aws:iam::123456789012:server-certificate/company/servercerts/ProdServerCert"
         #
 
@@ -39,9 +51,9 @@
       ec2_lc:
         name: Anisble_Launch_Config
         image_id: "{{ ami_id }}"
-        key_name: POC-TEST-KEY
+        key_name: "{{ key_name }}"
         region: "{{ region }}"
-        security_groups: sg-fe64b88c
+        security_groups: "{{security_id}}"
         instance_type: t2.micro
         assign_public_ip: yes
  
@@ -49,18 +61,35 @@
       ec2_asg:
         name: Ansible_Auto_Group
         load_balancers: [ 'Auto-ELB' ]
-        availability_zones: [ 'us-east-1a', 'us-east-1b' ]
-        vpc_zone_identifier: [ 'subnet-ecf80ca4', 'subnet-c6b5859d' ]
+        availability_zones: [ 'us-east-1a', 'us-east-1b', 'us-east-1c' ]
+        vpc_zone_identifier: [ 'subnet-8967fed3', 'subnet-eb6932a3', 'subnet-ca7098ae' ]
         launch_config_name: Anisble_Launch_Config
         health_check_period: 60
         health_check_type: ELB
         replace_all_instances: yes
         min_size: 1
-        max_size: 3
-        desired_capacity: 2
+        max_size: 4
+        desired_capacity: 3
         region: "{{ region }}"
         tags:
           - environment: production
             propagate_at_launch: no
+
+    - name: create alarm
+      ec2_metric_alarm:
+        state: present
+        region: ap-southeast-2
+        name: "cpu-low"
+        metric: "CPUUtilization"
+        namespace: "AWS/EC2"
+        statistic: Average
+        comparison: "<="
+        threshold: 5.0
+        period: 300
+        evaluation_periods: 3
+        unit: "Percent"
+        description: "This will alarm when a bamboo slave's cpu usage average is lower than 5% for 15 minutes "
+        dimensions: {'InstanceId':'i-XXX'}
+        alarm_actions: ["action1","action2"]  
 
 

@@ -1,6 +1,6 @@
 --- 
 - name: Remove IPA Client From Domain
-  hosts: aws-tests
+  hosts: ipa-clients
   user: jenkins
   become: yes
 # connection: local
@@ -20,7 +20,7 @@
       register: newuser
 
     - name: Remove IPA domain
-      command: ipa-client-install --uninstall --server=ipa.realworldtek.com --domain=private.domain --principal=admin --password="{{ipa_password}}" -U
+      command: ipa-client-install --uninstall --server=ipa.realworld.gov --domain=private.domain --principal=admin --password="{{ipa_password}}" -U
 
     - name: Remove common software requirements
       yum: pkg={{ item }} state=absent

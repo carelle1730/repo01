@@ -1,13 +1,13 @@
 --- 
 - name: Installed Updates And All Basic Commands 
-  hosts: all-servers
+  hosts: all-vms
   user: jenkins
   become: yes
 # connection: local
   gather_facts: False
 
   vars:
-    user_password: passw0rd
+    user_password: passw0rd123!
     user_name: emanu7
 
   tasks:
@@ -37,13 +37,9 @@
 
     - name: Expire Password Days For User
       shell: chage -d 365 {{ user_name }}
-      notify:
-        - restart sshd
 
     - name: Install common software requirements
       yum: pkg={{ item }} state=present
-      notify:
-        - restart sshd
       with_items:
          - git
          - vim
@@ -62,11 +58,10 @@
          - python-boto3
          - open-vm-tools
 
-  handlers:
-   - name: restart sshd
-     service: 
-       name=sshd
-       state=restarted 
-
+    - name: restart server
+      command: /sbin/shutdown -r +1
+      async: 0
+      poll: 0
+      ignore_errors: false
 
 
