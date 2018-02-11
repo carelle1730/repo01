@@ -1,6 +1,6 @@
 --- 
 - name: Installed Updates And All Basic Commands 
-  hosts: all-vms
+  hosts: 10.0.0.108
   user: jenkins
   become: yes
 # connection: local
@@ -13,6 +13,12 @@
   tasks:
     - name: Install All Updates
       yum: name=* state=latest
+
+    - name: Install epel-repo
+      yum: name=epel-release state=latest
+
+    - name: Clean Repos
+      shell: yum clean all
 
     - name: Add Back Door User
       action: user name={{ user_name}} password={{ user_password }}
