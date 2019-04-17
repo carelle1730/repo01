@@ -12,7 +12,7 @@
     instance_type: t2.micro
     ami_id: ami-591dda23
     instance_name: Ans-EC2
-    subnet_id: subnet-c6b5859d
+    subnet_id: subnet-0e7264961cd4775de
     ELB_Name: Ans-ELB
 
   tasks:
