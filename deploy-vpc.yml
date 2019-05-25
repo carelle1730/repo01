@@ -4,7 +4,7 @@
   gather_facts: no
 
   vars:
-    region: us-east-1
+    region: us-west-1
 
   tasks:
     - ec2_vpc:
